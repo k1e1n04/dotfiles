@@ -4,11 +4,12 @@ return {
     opts = {
       servers = {
         vtsls = {
-          -- 1. ルート検知
+          -- 1. ルート検知（モノレポ対応: 最も近いpackage.jsonをルートにする）
           root_dir = function(fname)
             local util = require("lspconfig.util")
-            return util.root_pattern("tsconfig.json")(fname)
-              or util.root_pattern("package.json", "pnpm-workspace.yaml", ".git")(fname)
+            -- 各ファイルから最も近いpackage.jsonを探す（モノレポの各パッケージをルートとして認識）
+            return util.root_pattern("package.json")(fname)
+              or util.root_pattern("tsconfig.json", "pnpm-workspace.yaml", ".git")(fname)
           end,
           -- 2. 設定
           settings = {
